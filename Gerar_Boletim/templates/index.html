@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Gerador de Boletim</title>
+</head>
+<body>
+    <h1>Gerador de Boletim</h1>
+
+    <!-- BOTÃO IMPORTAR EXCEL -->
+    <div class="importar-area">
+        <label for="importar-excel" class="btn-importar">
+            📂 Importar Excel
+        </label>
+        <input type="file" id="importar-excel" accept=".xlsx" style="display:none" onchange="importarExcel(this)">
+        <span id="importar-status"></span>
+    </div>
+
+    <form action="/gerar" method="POST" id="form-boletim">
+        <div id="container-materias"></div>
+
+        <div class="controles">
+            <button type="button" onclick="adicionarMateria()">+ Adicionar Matéria</button>
+            <button type="button" class="btn-calc" onclick="abrirCalculadora()">🧮 Calcular Nota</button>
+            <button type="submit">Gerar Excel do Boletim</button>
+        </div>
+    </form>
+
+    <!-- MODAL CALCULADORA -->
+    <div id="modal-overlay" class="modal-overlay" onclick="fecharModal(event)">
+        <div class="modal-box">
+            <button class="modal-close" onclick="fecharModalBtn()">✕</button>
+            <h2 class="modal-titulo">Calculadora de Nota</h2>
+
+            <!-- PASSO 1: Escolha do tipo -->
+            <div id="passo-tipo">
+                <p class="modal-desc">Selecione o tipo de avaliação:</p>
+                <div class="tipo-botoes">
+                    <button type="button" class="btn-tipo" onclick="selecionarTipo('AP')">
+                        <span class="tipo-sigla">AP</span>
+                        <span class="tipo-label">Avaliação Padrão</span>
+                    </button>
+                    <button type="button" class="btn-tipo btn-tipo-fgb" onclick="selecionarTipo('FGB')">
+                        <span class="tipo-sigla">FGB</span>
+                        <span class="tipo-label">Formação Geral Básica</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASSO 2: AP -->
+            <div id="passo-ap" class="hidden">
+                <p class="modal-desc">Digite as duas notas da <strong>AP</strong>:</p>
+                <div class="calc-inputs">
+                    <div class="calc-campo">
+                        <label>Nota 1</label>
+                        <input type="number" id="ap-nota1" placeholder="0.0" step="0.1" min="0" max="10" oninput="calcularAP()">
+                    </div>
+                    <div class="calc-campo">
+                        <label>Nota 2</label>
+                        <input type="number" id="ap-nota2" placeholder="0.0" step="0.1" min="0" max="10" oninput="calcularAP()">
+                    </div>
+                </div>
+                <div id="resultado-ap" class="resultado hidden"></div>
+                <div class="modal-acoes">
+                    <button type="button" class="btn-voltar" onclick="voltarTipo()">← Voltar</button>
+                </div>
+            </div>
+
+            <!-- PASSO 2: FGB -->
+            <div id="passo-fgb" class="hidden">
+                <p class="modal-desc">Digite as notas da <strong>FGB</strong>:</p>
+                <div class="calc-inputs calc-inputs-fgb">
+                    <div class="calc-campo">
+                        <label>Prova 1</label>
+                        <input type="number" id="fgb-p1" placeholder="0.0" step="0.1" min="0" max="10" oninput="calcularFGB()">
+                    </div>
+                    <div class="calc-campo">
+                        <label>Prova 2</label>
+                        <input type="number" id="fgb-p2" placeholder="0.0" step="0.1" min="0" max="10" oninput="calcularFGB()">
+                    </div>
+                    <div class="calc-campo calc-campo-at">
+                        <label>AT <span class="label-hint">(Trabalho — 20%)</span></label>
+                        <input type="number" id="fgb-at" placeholder="0.0" step="0.1" min="0" max="10" oninput="calcularFGB()">
+                    </div>
+                </div>
+                <div class="fgb-formula">
+                    <span>Média = (P1 + P2) ÷ 2 × 80% + AT × 20%</span>
+                </div>
+                <div id="resultado-fgb" class="resultado hidden"></div>
+                <div class="modal-acoes">
+                    <button type="button" class="btn-voltar" onclick="voltarTipo()">← Voltar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
